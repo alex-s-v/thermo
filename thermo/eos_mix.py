@@ -388,13 +388,13 @@ class PRMIX(GCEOSMIX, PR):
         
     Parameters
     ----------
-    Tcs : float
+    Tcs : list[float]
         Critical temperatures of all compounds, [K]
-    Pcs : float
+    Pcs : list[float]
         Critical pressures of all compounds, [Pa]
-    omegas : float
+    omegas : list[float]
         Acentric factors of all compounds, [-]
-    zs : float
+    zs : list[float]
         Overall mole fractions of all species, [-]
     kijs : list[list[float]], optional
         n*n size list of lists with binary interaction parameters for the
@@ -549,13 +549,13 @@ class SRKMIX(GCEOSMIX, SRK):
             
     Parameters
     ----------
-    Tcs : float
+    Tcs : list[float]
         Critical temperatures of all compounds, [K]
-    Pcs : float
+    Pcs : list[float]
         Critical pressures of all compounds, [Pa]
-    omegas : float
+    omegas : list[float]
         Acentric factors of all compounds, [-]
-    zs : float
+    zs : list[float]
         Overall mole fractions of all species, [-]
     kijs : list[list[float]], optional
         n*n size list of lists with binary interaction parameters for the
@@ -707,13 +707,13 @@ class PR78MIX(PRMIX):
         
     Parameters
     ----------
-    Tcs : float
+    Tcs : list[float]
         Critical temperatures of all compounds, [K]
-    Pcs : float
+    Pcs : list[float]
         Critical pressures of all compounds, [Pa]
-    omegas : float
+    omegas : list[float]
         Acentric factors of all compounds, [-]
-    zs : float
+    zs : list[float]
         Overall mole fractions of all species, [-]
     kijs : list[list[float]], optional
         n*n size list of lists with binary interaction parameters for the
@@ -807,11 +807,11 @@ class VDWMIX(GCEOSMIX, VDW):
             
     Parameters
     ----------
-    Tcs : float
+    Tcs : list[float]
         Critical temperatures of all compounds, [K]
-    Pcs : float
+    Pcs : list[float]
         Critical pressures of all compounds, [Pa]
-    zs : float
+    zs : list[float]
         Overall mole fractions of all species, [-]
     kijs : list[list[float]], optional
         n*n size list of lists with binary interaction parameters for the
@@ -943,13 +943,13 @@ class PRSVMIX(PRMIX, PRSV):
         
     Parameters
     ----------
-    Tcs : float
+    Tcs : list[float]
         Critical temperatures of all compounds, [K]
-    Pcs : float
+    Pcs : list[float]
         Critical pressures of all compounds, [Pa]
-    omegas : float
+    omegas : list[float]
         Acentric factors of all compounds, [-]
-    zs : float
+    zs : list[float]
         Overall mole fractions of all species, [-]
     kijs : list[list[float]], optional
         n*n size list of lists with binary interaction parameters for the
@@ -1094,13 +1094,13 @@ class PRSV2MIX(PRMIX, PRSV2):
         
     Parameters
     ----------
-    Tcs : float
+    Tcs : list[float]
         Critical temperatures of all compounds, [K]
-    Pcs : float
+    Pcs : list[float]
         Critical pressures of all compounds, [Pa]
-    omegas : float
+    omegas : list[float]
         Acentric factors of all compounds, [-]
-    zs : float
+    zs : list[float]
         Overall mole fractions of all species, [-]
     kijs : list[list[float]], optional
         n*n size list of lists with binary interaction parameters for the
@@ -1254,13 +1254,13 @@ class TWUPRMIX(PRMIX, TWUPR):
         
     Parameters
     ----------
-    Tcs : float
+    Tcs : list[float]
         Critical temperatures of all compounds, [K]
-    Pcs : float
+    Pcs : list[float]
         Critical pressures of all compounds, [Pa]
-    omegas : float
+    omegas : list[float]
         Acentric factors of all compounds, [-]
-    zs : float
+    zs : list[float]
         Overall mole fractions of all species, [-]
     kijs : list[list[float]], optional
         n*n size list of lists with binary interaction parameters for the
@@ -1372,13 +1372,13 @@ class TWUSRKMIX(SRKMIX, TWUSRK):
     
     Parameters
     ----------
-    Tcs : float
+    Tcs : list[float]
         Critical temperatures of all compounds, [K]
-    Pcs : float
+    Pcs : list[float]
         Critical pressures of all compounds, [Pa]
-    omegas : float
+    omegas : list[float]
         Acentric factors of all compounds, [-]
-    zs : float
+    zs : list[float]
         Overall mole fractions of all species, [-]
     kijs : list[list[float]], optional
         n*n size list of lists with binary interaction parameters for the
@@ -1480,13 +1480,13 @@ class APISRKMIX(SRKMIX, APISRK):
         
     Parameters
     ----------
-    Tcs : float
+    Tcs : list[float]
         Critical temperatures of all compounds, [K]
-    Pcs : float
+    Pcs : list[float]
         Critical pressures of all compounds, [Pa]
-    omegas : float
+    omegas : list[float]
         Acentric factors of all compounds, [-]
-    zs : float
+    zs : list[float]
         Overall mole fractions of all species, [-]
     kijs : list[list[float]], optional
         n*n size list of lists with binary interaction parameters for the
