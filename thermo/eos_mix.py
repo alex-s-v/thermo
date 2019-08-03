@@ -439,7 +439,7 @@ class PRMIX(GCEOSMIX, PR):
         self.omegas = omegas
         self.zs = zs
         if kijs is None:
-            kijs = [[0]*self.N for i in range(self.N)]
+            kijs = [[0] * self.N] * self.N
         self.kijs = kijs
         self.T = T
         self.P = P
@@ -600,7 +600,7 @@ class SRKMIX(GCEOSMIX, SRK):
         self.omegas = omegas
         self.zs = zs
         if kijs is None:
-            kijs = [[0]*self.N for i in range(self.N)]
+            kijs = [[0] * self.N] * self.N
         self.kijs = kijs
         self.T = T
         self.P = P
@@ -759,7 +759,7 @@ class PR78MIX(PRMIX):
         self.omegas = omegas
         self.zs = zs
         if kijs is None:
-            kijs = [[0]*self.N for i in range(self.N)]
+            kijs = [[0] * self.N] * self.N
         self.kijs = kijs
         self.T = T
         self.P = P
@@ -852,7 +852,7 @@ class VDWMIX(GCEOSMIX, VDW):
         self.Pcs = Pcs
         self.zs = zs
         if kijs is None:
-            kijs = [[0]*self.N for i in range(self.N)]
+            kijs = [[0] * self.N] * self.N
         self.kijs = kijs
         self.T = T
         self.P = P
@@ -1015,7 +1015,7 @@ class PRSVMIX(PRMIX, PRSV):
         self.zs = zs
 
         if kijs is None:
-            kijs = [[0]*self.N for i in range(self.N)]
+            kijs = [[0] * self.N] * self.N
         self.kijs = kijs
 
         if kappa1s is None:
@@ -1154,7 +1154,7 @@ class PRSV2MIX(PRMIX, PRSV2):
         self.zs = zs
 
         if kijs is None:
-            kijs = [[0]*self.N for i in range(self.N)]
+            kijs = [[0] * self.N] * self.N
         self.kijs = kijs
 
         if kappa1s is None:
@@ -1303,7 +1303,7 @@ class TWUPRMIX(PRMIX, TWUPR):
         self.omegas = omegas
         self.zs = zs
         if kijs is None:
-            kijs = [[0]*self.N for i in range(self.N)]
+            kijs = [[0] * self.N] * self.N
         self.kijs = kijs
         self.T = T
         self.P = P
@@ -1421,7 +1421,7 @@ class TWUSRKMIX(SRKMIX, TWUSRK):
         self.omegas = omegas
         self.zs = zs
         if kijs is None:
-            kijs = [[0]*self.N for i in range(self.N)]
+            kijs = [[0] * self.N] * self.N
         self.kijs = kijs
         self.T = T
         self.P = P
@@ -1531,7 +1531,7 @@ class APISRKMIX(SRKMIX, APISRK):
         self.omegas = omegas
         self.zs = zs
         if kijs is None:
-            kijs = [[0]*self.N for i in range(self.N)]
+            kijs = [[0] * self.N] * self.N
         self.kijs = kijs
         self.T = T
         self.P = P
