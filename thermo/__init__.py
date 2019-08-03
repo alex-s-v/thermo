@@ -58,6 +58,7 @@ from . import vapor_pressure
 from . import virial
 from . import viscosity
 from . import volume
+from . import vle
 
 
 from .acentric import *
@@ -98,6 +99,7 @@ from .vapor_pressure import *
 from .virial import *
 from .viscosity import *
 from .volume import *
+from .vle import *
 
 
 __all__ = ['activity', 'chemical', 'combustion', 'critical',
@@ -108,7 +110,7 @@ __all__ = ['activity', 'chemical', 'combustion', 'critical',
  'refractivity', 'safety', 'solubility', 'interface',
  'thermal_conductivity', 'triple', 'utils',
  'vapor_pressure', 'virial', 'viscosity', 'volume', 'acentric', 'coolprop', 
- 'datasheet', 'dippr', 'unifac', 'stream', 'mixture']
+ 'datasheet', 'dippr', 'unifac', 'stream', 'mixture', 'vle']
 
 
 __all__.extend(acentric.__all__)
@@ -149,6 +151,7 @@ __all__.extend(vapor_pressure.__all__)
 __all__.extend(virial.__all__)
 __all__.extend(viscosity.__all__)
 __all__.extend(volume.__all__)
+__all__.extend(vle.__all__)
 
 # backwards compatibility hack to allow thermo.chemical.Mixture to still be importable
 chemical.__dict__['Mixture'] = mixture.Mixture
