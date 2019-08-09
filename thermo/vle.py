@@ -283,11 +283,14 @@ class VLE(object):
                 vals.append(zs[0])
             err = 0
             if exp_zs:
-                err += (2*np.subtract(exp_zs, vals) / np.add(exp_zs, vals))**2
+                n0p = np.greater(exp_zs, 0)
+                ezs = np.compress(n0p, exp_zs)
+                vls = np.compress(n0p, vals)
+                err += np.sum((2*np.subtract(ezs, vls) / ezs)**2)
+                # err += (2*np.subtract(ezs, vls) / np.add(ezs, vls))**2
             if exp_props:
-                err += (2*np.subtract(exp_props, props) / exp_props)**2
-            er = sum(err) / len(err)
-            return er
+                err += np.sum((2*np.subtract(exp_props, props) / exp_props)**2)
+            return err
 
         res = optimize.fminbound(opt_func, a, b, **kwargs)
         return res
@@ -354,5 +357,5 @@ class VLE(object):
                     prop=prop
                 ).eos)
             )
-        return cls.fit_kijs(eoss, a=-0.4, b=0.4, exp_zs=exp_zs, phase=phase,
+        return cls.fit_kijs(eoss, a=a, b=b, exp_zs=exp_zs, phase=phase,
                             prop=prop, **kwargs)

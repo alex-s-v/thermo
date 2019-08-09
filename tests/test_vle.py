@@ -73,4 +73,4 @@ def test_VLE_fit():
     }
 
     bip = VLE.fit_kijs_from_IDs(**data)
-    assert_allclose(bip, 0.06125588347613296)
+    assert_allclose(bip, 0.0641753392758043)
