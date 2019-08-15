@@ -271,6 +271,10 @@ class VLE(object):
         Either `exp_zs`, `exp_props` or both needs to be specified.
         '''
         assert exp_zs or exp_props
+        if exp_zs:
+            assert len(exp_zs) == len(eoss)
+        else:
+            assert len(exp_props) == len(eoss)
 
         def opt_func(k):
             kijs = [[0, k], [k, 0]]
@@ -287,7 +291,6 @@ class VLE(object):
                 ezs = np.compress(n0p, exp_zs)
                 vls = np.compress(n0p, vals)
                 err += np.sum((2*np.subtract(ezs, vls) / ezs)**2)
-                # err += (2*np.subtract(ezs, vls) / np.add(ezs, vls))**2
             if exp_props:
                 err += np.sum((2*np.subtract(exp_props, props) / exp_props)**2)
             return err
@@ -296,7 +299,7 @@ class VLE(object):
         return res
 
     @classmethod
-    def fit_kijs_from_IDs(cls, IDs, zs, a=-0.2, b=0.2, exp_zs=[], exp_prop=[],
+    def fit_kijs_from_IDs(cls, IDs, zs, a=-0.2, b=0.2, exp_zs=[], exp_props=[],
                           eos=PRMIX, Ts=[], Ps=[], phase='l', prop='T',
                           **kwargs):
         r'''Fit binary interaction parameter of the specified EoS using
@@ -334,7 +337,7 @@ class VLE(object):
             Which of the two parameters (pressure or temperature) will be
             changing during the optimization process.
         kwargs : dict
-            Keyword arguments for the ``scipy.optimize.brentq`` algorithm.
+            Keyword arguments for the ``scipy.optimize.fminbound`` algorithm.
 
         Returns
         -------
@@ -344,10 +347,12 @@ class VLE(object):
         assert len(Ts) == len(Ps) == len(zs)
         if len(exp_zs) != 0:
             assert len(exp_zs) == len(Ts)
+        if len(exp_props) != 0:
+            assert len(exp_props) == len(Ts)
         eoss = []
         for t, p, z in zip(Ts, Ps, zs):
             eoss.append(
-                deepcopy(VLE.from_IDs(
+                VLE.from_IDs(
                     IDs,
                     [z, 1-z],
                     eos=eos,
@@ -355,7 +360,7 @@ class VLE(object):
                     P=p,
                     phase=phase,
                     prop=prop
-                ).eos)
+                ).eos
             )
-        return cls.fit_kijs(eoss, a=a, b=b, exp_zs=exp_zs, phase=phase,
-                            prop=prop, **kwargs)
+        return cls.fit_kijs(eoss, a=a, b=b, exp_zs=exp_zs, exp_props=exp_props,
+                            phase=phase, prop=prop, **kwargs)
