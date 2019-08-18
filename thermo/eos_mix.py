@@ -22,7 +22,7 @@ SOFTWARE.'''
 from __future__ import division
 
 __all__ = ['GCEOSMIX', 'PRMIX', 'SRKMIX', 'PR78MIX', 'VDWMIX', 'PRSVMIX', 
-'PRSV2MIX', 'TWUPRMIX', 'TWUSRKMIX', 'APISRKMIX']
+'PRSV2MIX', 'TWUPRMIX', 'TWUSRKMIX', 'APISRKMIX', 'PRLMMIX']
 import numpy as np
 from scipy.optimize import newton
 from scipy.misc import derivative
@@ -67,6 +67,19 @@ class GCEOSMIX(GCEOS):
     mixture. It calls `a_alpha_and_derivatives` from the pure-component EOS for 
     each species via multiple inheritance.
     '''
+    def __init__(self, kijs=None, lijs=None, mijs=None, is_as=False, n=0):
+        self.N = n
+        self.is_as = is_as
+        if kijs is None and not is_as:
+            kijs = [[0] * self.N] * self.N
+        self.kijs = kijs
+        if lijs is None and is_as:
+            lijs = [[0] * self.N] * self.N
+        self.lijs = lijs
+        if mijs is None and is_as:
+            mijs = [[0] * self.N] * self.N
+        self.mijs = mijs
+
     def a_alpha_and_derivatives(self, T, full=True, quick=True):
         r'''Method to calculate `a_alpha` and its first and second
         derivatives for an EOS with the Van der Waals mixing rules. Uses the
@@ -115,7 +128,12 @@ class GCEOSMIX(GCEOS):
         >>> #diff(a_alpha_ij, T)
         >>> #diff(a_alpha_ij, T, T)
         '''
-        zs, kijs = self.zs, self.kijs
+        zs = self.zs
+        if not self.is_as:
+            kijs = self.kijs
+        else:
+            lijs, mijs = self.lijs, self.mijs
+            kijs = [[lijs[i][j] + mijs[i][j]*(zs[i] - zs[j]) for j in self.cmps] for i in self.cmps]
         a_alphas, da_alpha_dTs, d2a_alpha_dT2s = [], [], []
         
         for i in self.cmps:
@@ -359,7 +377,6 @@ class GCEOSMIX(GCEOS):
             return self
 
 
-
 class PRMIX(GCEOSMIX, PR):
     r'''Class for solving the Peng-Robinson cubic equation of state for a 
     mixture of any number of compounds. Subclasses `PR`. Solves the EOS on
@@ -431,16 +448,14 @@ class PRMIX(GCEOSMIX, PR):
        no. 1 (January 1, 1985): 25-41. doi:10.1016/0378-3812(85)87035-7. 
     '''
     a_alpha_mro = -4
-    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, T=None, P=None, V=None):
-        self.N = len(Tcs)
+    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, lijs=None,
+                 mijs=None, T=None, P=None, V=None, is_as=False):
+        super(PRMIX, self).__init__(kijs=kijs, lijs=lijs, mijs=mijs, is_as=is_as, n=len(Tcs))
         self.cmps = range(self.N)
         self.Tcs = Tcs
         self.Pcs = Pcs
         self.omegas = omegas
         self.zs = zs
-        if kijs is None:
-            kijs = [[0] * self.N] * self.N
-        self.kijs = kijs
         self.T = T
         self.P = P
         self.V = V
@@ -592,16 +607,14 @@ class SRKMIX(GCEOSMIX, SRK):
        Butterworth-Heinemann, 1985.
     '''
     a_alpha_mro = -4
-    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, T=None, P=None, V=None):
-        self.N = len(Tcs)
+    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, lijs=None,
+                 mijs=None, T=None, P=None, V=None, is_as=False):
+        super(SRKMIX, self).__init__(kijs=kijs, lijs=lijs, mijs=mijs, is_as=is_as, n=len(Tcs))
         self.cmps = range(self.N)
         self.Tcs = Tcs
         self.Pcs = Pcs
         self.omegas = omegas
         self.zs = zs
-        if kijs is None:
-            kijs = [[0] * self.N] * self.N
-        self.kijs = kijs
         self.T = T
         self.P = P
         self.V = V
@@ -751,16 +764,14 @@ class PR78MIX(PRMIX):
        no. 1 (January 1, 1985): 25-41. doi:10.1016/0378-3812(85)87035-7. 
     '''
     a_alpha_mro = -4
-    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, T=None, P=None, V=None):
-        self.N = len(Tcs)
+    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, lijs=None,
+                 mijs=None, T=None, P=None, V=None, is_as=False):
+        GCEOSMIX.__init__(self, kijs=kijs, lijs=lijs, mijs=mijs, is_as=is_as, n=len(Tcs))
         self.cmps = range(self.N)
         self.Tcs = Tcs
         self.Pcs = Pcs
         self.omegas = omegas
         self.zs = zs
-        if kijs is None:
-            kijs = [[0] * self.N] * self.N
-        self.kijs = kijs
         self.T = T
         self.P = P
         self.V = V
@@ -845,15 +856,13 @@ class VDWMIX(GCEOSMIX, VDW):
        edition. New York: McGraw-Hill Professional, 2000.
     '''
     a_alpha_mro = -4
-    def __init__(self, Tcs, Pcs, zs, kijs=None, T=None, P=None, V=None):
-        self.N = len(Tcs)
+    def __init__(self, Tcs, Pcs, zs, kijs=None, lijs=None, mijs=None,
+                 T=None, P=None, V=None, is_as=False):
+        super(VDWMIX, self).__init__(kijs=kijs, lijs=lijs, mijs=mijs, is_as=is_as, n=len(Tcs))
         self.cmps = range(self.N)
         self.Tcs = Tcs
         self.Pcs = Pcs
         self.zs = zs
-        if kijs is None:
-            kijs = [[0] * self.N] * self.N
-        self.kijs = kijs
         self.T = T
         self.P = P
         self.V = V
@@ -1006,18 +1015,14 @@ class PRSVMIX(PRMIX, PRSV):
        67, no. 1 (February 1, 1989): 170-73. doi:10.1002/cjce.5450670125.
     '''
     a_alpha_mro = -5
-    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, T=None, P=None, V=None, kappa1s=None):
-        self.N = len(Tcs)
+    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, lijs=None, mijs=None,
+                 T=None, P=None, V=None, kappa1s=None, is_as=False):
+        GCEOSMIX.__init__(self, kijs=kijs, lijs=lijs, mijs=mijs, is_as=is_as, n=len(Tcs))
         self.cmps = range(self.N)
         self.Tcs = Tcs
         self.Pcs = Pcs
         self.omegas = omegas
         self.zs = zs
-
-        if kijs is None:
-            kijs = [[0] * self.N] * self.N
-        self.kijs = kijs
-
         if kappa1s is None:
             kappa1s = [0 for i in self.cmps]
 
@@ -1144,18 +1149,14 @@ class PRSV2MIX(PRMIX, PRSV2):
        doi:10.1002/cjce.5450640516. 
     '''
     a_alpha_mro = -5
-    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, T=None, P=None, V=None,
-                 kappa1s=None, kappa2s=None, kappa3s=None):
-        self.N = len(Tcs)
+    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, lijs=None, mijs=None, T=None, P=None, V=None,
+                 kappa1s=None, kappa2s=None, kappa3s=None, is_as=False):
+        GCEOSMIX.__init__(self, kijs=kijs, lijs=lijs, mijs=mijs, is_as=is_as, n=len(Tcs))
         self.cmps = range(self.N)
         self.Tcs = Tcs
         self.Pcs = Pcs
         self.omegas = omegas
         self.zs = zs
-
-        if kijs is None:
-            kijs = [[0] * self.N] * self.N
-        self.kijs = kijs
 
         if kappa1s is None:
             kappa1s = [0 for i in self.cmps]
@@ -1295,16 +1296,14 @@ class TWUPRMIX(PRMIX, TWUPR):
        1995): 49-59. doi:10.1016/0378-3812(94)02601-V.
     '''
     a_alpha_mro = -5
-    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, T=None, P=None, V=None):
-        self.N = len(Tcs)
+    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, lijs=None,
+                 mijs=None, T=None, P=None, V=None, is_as=False):
+        GCEOSMIX.__init__(self, kijs=kijs, lijs=lijs, mijs=mijs, is_as=is_as, n=len(Tcs))
         self.cmps = range(self.N)
         self.Tcs = Tcs
         self.Pcs = Pcs
         self.omegas = omegas
         self.zs = zs
-        if kijs is None:
-            kijs = [[0] * self.N] * self.N
-        self.kijs = kijs
         self.T = T
         self.P = P
         self.V = V
@@ -1413,16 +1412,14 @@ class TWUSRKMIX(SRKMIX, TWUSRK):
        1995): 61-69. doi:10.1016/0378-3812(94)02602-W.
     '''
     a_alpha_mro = -5
-    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, T=None, P=None, V=None):
-        self.N = len(Tcs)
+    def __init__(self, Tcs, Pcs, omegas, zs, kijs=None, lijs=None,
+                 mijs=None, T=None, P=None, V=None, is_as=False):
+        GCEOSMIX.__init__(self, kijs=kijs, lijs=lijs, mijs=mijs, is_as=is_as, n=len(Tcs))
         self.cmps = range(self.N)
         self.Tcs = Tcs
         self.Pcs = Pcs
         self.omegas = omegas
         self.zs = zs
-        if kijs is None:
-            kijs = [[0] * self.N] * self.N
-        self.kijs = kijs
         self.T = T
         self.P = P
         self.V = V
@@ -1522,17 +1519,15 @@ class APISRKMIX(SRKMIX, APISRK):
        American Petroleum Institute, 7E, 2005.
     '''
     a_alpha_mro = -5
-    def __init__(self, Tcs, Pcs, zs, omegas=None, kijs=None, T=None, P=None, V=None,
-                 S1s=None, S2s=None):
-        self.N = len(Tcs)
+    def __init__(self, Tcs, Pcs, zs, omegas=None, kijs=None, lijs=None,
+                 mijs=None, T=None, P=None, V=None,
+                 S1s=None, S2s=None, is_as=False):
+        GCEOSMIX.__init__(self, kijs=kijs, lijs=lijs, mijs=mijs, is_as=is_as, n=len(Tcs))
         self.cmps = range(self.N)
         self.Tcs = Tcs
         self.Pcs = Pcs
         self.omegas = omegas
         self.zs = zs
-        if kijs is None:
-            kijs = [[0] * self.N] * self.N
-        self.kijs = kijs
         self.T = T
         self.P = P
         self.V = V
