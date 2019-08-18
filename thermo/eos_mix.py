@@ -22,7 +22,7 @@ SOFTWARE.'''
 from __future__ import division
 
 __all__ = ['GCEOSMIX', 'PRMIX', 'SRKMIX', 'PR78MIX', 'VDWMIX', 'PRSVMIX', 
-'PRSV2MIX', 'TWUPRMIX', 'TWUSRKMIX', 'APISRKMIX', 'PRLMMIX']
+'PRSV2MIX', 'TWUPRMIX', 'TWUSRKMIX', 'APISRKMIX']
 import numpy as np
 from scipy.optimize import newton
 from scipy.misc import derivative
